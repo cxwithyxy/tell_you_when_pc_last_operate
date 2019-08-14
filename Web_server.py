@@ -1,6 +1,7 @@
 from http.server import HTTPServer, BaseHTTPRequestHandler
 from Operation_watcher import Operation_watcher
 import json
+from mylib.Config_controller.Config_controller import Config_controller
 
 class SimpleHTTPServer(HTTPServer):
     operation_watcher: Operation_watcher
@@ -29,10 +30,16 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
 
 class Web_server:
 
+    conf_c: Config_controller
+
+    def __init__(self):
+        self.conf_c = Config_controller("setting.ini")
+        self.conf_c.cd("web_server")
+
     def start(self, operation_watcher: Operation_watcher):
-        ip = '127.0.0.1'
-        port = 8182
-        httpd = SimpleHTTPServer(('127.0.0.1', 8182), SimpleHTTPRequestHandler)
+        ip = self.conf_c.get("ip")
+        port = self.conf_c.get("port")
+        httpd = SimpleHTTPServer((ip, int(port)), SimpleHTTPRequestHandler)
         httpd.operation_watcher = operation_watcher
         print(f"web server start at {ip}:{port}")
         httpd.serve_forever()
