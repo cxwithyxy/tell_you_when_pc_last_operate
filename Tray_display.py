@@ -9,7 +9,7 @@ class Tray_display():
     exit_callback = None
 
     def __init__(self):
-        self.icon = pystray.Icon('battery_level_show')
+        self.icon = pystray.Icon('tell_you_when_pc_last_operate')
         self.set_menu()
     
     def set_exit_callback(self, callback_func):
@@ -37,19 +37,6 @@ class Tray_display():
         self.icon.icon = image
 
     def run(self):
-        self.get_battery_level()
-        # _thread.start_new_thread(self.get_battery_level_thread, ())
+        self.create_icon_by_text(":)")
+        self.icon.title= "监控电脑最后的操作时间"
         self.icon.run()
-    
-    # def get_battery_level(self):
-    #     self.battery_level = Battery_info.get_battery_level()
-    #     self.icon.title = "battery: " + str(self.battery_level) + "%"
-    #     icon_text = str(self.battery_level)
-    #     if(self.battery_level == 100):
-    #         icon_text = "F"
-    #     self.create_icon_by_text(icon_text)
-    
-    # def get_battery_level_thread(self):
-    #     while(True):
-    #         self.get_battery_level()
-    #         time.sleep(self.battery_level_capture_rate)
