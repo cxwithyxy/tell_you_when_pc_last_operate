@@ -1,10 +1,9 @@
 import threading
 import time
 from Operation_watcher import Operation_watcher
+from Web_server import Web_server
 
 operation_watcher = Operation_watcher()
-
-
 
 def main_wait():
     while True:
@@ -27,7 +26,8 @@ threading.Thread(
 ).start()
 
 threading.Thread(
-    target = check_last_operate,
+    target = Web_server().start,
+    args = (operation_watcher,),
     daemon = True
 ).start()
 

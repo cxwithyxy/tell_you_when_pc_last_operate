@@ -1,0 +1,3 @@
+[submodule "mylib/Config_controller"]
+	path = mylib/Config_controller
+	url = https://github.com/cxwithyxy/Config_controller.git
