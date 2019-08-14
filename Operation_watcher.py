@@ -7,12 +7,13 @@ class Operation_watcher:
     hook_manager: pyWinhook.HookManager
     last_operate_time: float
     last_operate_name: str
+    interval_time: float
 
     def user_operate(self, event: pyWinhook.HookEvent):
-        interval_time = time.time() - self.last_operate_time
+        self.interval_time = time.time() - self.last_operate_time
         self.last_operate_time = time.time()
         self.last_operate_name = event.MessageName
-        # print(f'{interval_time}: {event.MessageName}')
+        # print(f'{self.interval_time}: {self.last_operate_name}')
         return True
     
     def __init__(self):

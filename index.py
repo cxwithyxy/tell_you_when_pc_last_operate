@@ -27,6 +27,7 @@ threading.Thread(
 
 threading.Thread(
     target = Web_server.start,
+    args = (Web_server, operation_watcher),
     daemon = True
 ).start()
 
