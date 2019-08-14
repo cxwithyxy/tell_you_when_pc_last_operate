@@ -1,12 +1,19 @@
-import pyWinhook, pythoncom
-
-def OnKeyboardEvent(event):
-    print(f'Key:{event.Key}')
-    return True
-
-hm = pyWinhook.HookManager()
-hm.KeyDown = OnKeyboardEvent
-hm.HookKeyboard()
+import threading
+from Operation_watcher import Operation_watcher
 
 
-pythoncom.PumpMessages()
+threading.Thread(
+    target = Operation_watcher().watch,
+    daemon = True
+).start()
+
+
+def main_wait():
+    while True:
+        q = input("\n===>:\n")
+        if q=="q":
+            break
+            exit()
+
+
+main_wait()
