@@ -8,32 +8,23 @@ from Tray_display import Tray_display
 
 operation_watcher = Operation_watcher()
 
-def main_wait():
-    while True:
-        q = input("\n===>:\n")
-        if q=="q":
-            break
-            exit()
-
-def check_last_operate():
-    while True:
-        interval_time = time.time() - operation_watcher.last_operate_time
-        if interval_time > 3:
-            print(f'more than {interval_time} no operate')
-        time.sleep(1)
+def on_exit():
+    print(operation_watcher)
+    operation_watcher.unwatch()
 
 def Tray_display_run():
-    Tray_display().run()
-
+    tray_display = Tray_display()
+    tray_display.set_exit_callback(on_exit)
+    tray_display.run()
 
 if __name__ == '__main__':
     multiprocessing.freeze_support()
-    
+    print(operation_watcher)
     p1 = multiprocessing.Process(
         target = Tray_display_run,
         daemon = True
     )
-    
+
     threading.Thread(
         target = operation_watcher.watch,
         daemon = True
@@ -46,4 +37,3 @@ if __name__ == '__main__':
     ).start()
     p1.start()
     p1.join()
-    # main_wait()

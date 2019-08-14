@@ -16,7 +16,6 @@ class Tray_display():
         self.exit_callback = callback_func
 
     def exit(self):
-        print("Exit")
         self.icon.stop()
         if(self.exit_callback):
             self.exit_callback()
