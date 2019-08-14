@@ -1,2 +1,5 @@
+Pillow==6.1.0
+pystray==0.14.4
 pywin32==224
 pyWinhook==1.6.1
+six==1.12.0
