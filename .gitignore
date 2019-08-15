@@ -1,1 +1,6 @@
 venv/
+.vscode/
+*.pyc
+setting.ini
+dist/
+build/
