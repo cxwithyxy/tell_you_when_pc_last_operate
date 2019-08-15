@@ -3,6 +3,7 @@ from Operation_watcher import Operation_watcher
 import json
 from mylib.Config_controller.Config_controller import Config_controller
 import threading
+import time
 
 class SimpleHTTPServer(HTTPServer):
     operation_watcher: Operation_watcher
@@ -18,7 +19,7 @@ class SimpleHTTPRequestHandler(BaseHTTPRequestHandler):
             json_str = json.dumps({
                 "last_operate_time": self.server.operation_watcher.last_operate_time,
                 "last_operate_name": self.server.operation_watcher.last_operate_name,
-                "interval_time": self.server.operation_watcher.interval_time
+                "interval_time": time.time() - self.server.operation_watcher.last_operate_time
             })
         try:
             self.wfile.write(json_str.encode("utf8"))

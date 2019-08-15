@@ -6,14 +6,12 @@ import threading
 class Operation_watcher:
     
     hook_manager: pyWinhook.HookManager
-    last_operate_time: float
-    last_operate_name: str
-    interval_time: float
+    last_operate_time: float = 0
+    last_operate_name: str = ""
     lock: threading.RLock
 
     def user_operate(self, event: pyWinhook.HookEvent):
         with self.lock:
-            self.interval_time = time.time() - self.last_operate_time
             self.last_operate_time = time.time()
             self.last_operate_name = event.MessageName
         return True
