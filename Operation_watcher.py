@@ -1,6 +1,7 @@
 import pyWinhook
 import pythoncom
 import time
+import threading
 
 class Operation_watcher:
     
@@ -8,15 +9,17 @@ class Operation_watcher:
     last_operate_time: float
     last_operate_name: str
     interval_time: float
+    lock: threading.RLock
 
     def user_operate(self, event: pyWinhook.HookEvent):
-        self.interval_time = time.time() - self.last_operate_time
-        self.last_operate_time = time.time()
-        self.last_operate_name = event.MessageName
-        # print(f'{self.interval_time}: {self.last_operate_name}')
+        with self.lock:
+            self.interval_time = time.time() - self.last_operate_time
+            self.last_operate_time = time.time()
+            self.last_operate_name = event.MessageName
         return True
     
-    def __init__(self):
+    def __init__(self, lock: threading.RLock):
+        self.lock = lock
         self.hook_manager = pyWinhook.HookManager()
         self.hook_manager.KeyAll = self.user_operate
         self.hook_manager.MouseAll = self.user_operate

@@ -6,6 +6,7 @@ from Tray_display import Tray_display
 import pythoncom
 
 pipe1, pipe2 = multiprocessing.Pipe()
+lock = threading.RLock()
 
 def Tray_display_run(pipe: multiprocessing.Pipe):
     def on_exit():
@@ -24,13 +25,13 @@ def main_process(pipe: multiprocessing.Pipe):
                 operation_watcher.unwatch()
                 break
 
-    operation_watcher = Operation_watcher()
+    operation_watcher = Operation_watcher(lock)
     threading.Thread(
         target = operation_watcher.watch,
         daemon = True
     ).start()
     threading.Thread(
-        target = Web_server().start,
+        target = Web_server(lock).start,
         args = (operation_watcher,),
         daemon = True
     ).start()
