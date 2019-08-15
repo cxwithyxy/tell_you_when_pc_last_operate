@@ -22,6 +22,10 @@ class Operation_watcher:
         self.hook_manager.MouseAll = self.user_operate
         self.last_operate_time = time.time()
 
+    def unwatch(self):
+        self.hook_manager.UnhookKeyboard()
+        self.hook_manager.UnhookMouse()
+
     def watch(self):
         self.hook_manager.HookKeyboard()
         self.hook_manager.HookMouse()

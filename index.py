@@ -1,34 +1,52 @@
 import threading
-import time
+import multiprocessing
 from Operation_watcher import Operation_watcher
 from Web_server import Web_server
+from Tray_display import Tray_display
+import pythoncom
 
-operation_watcher = Operation_watcher()
+pipe1, pipe2 = multiprocessing.Pipe()
 
-def main_wait():
-    while True:
-        q = input("\n===>:\n")
-        if q=="q":
-            break
-            exit()
+def Tray_display_run(pipe: multiprocessing.Pipe):
+    def on_exit():
+        pipe.send("exit")
+    tray_display = Tray_display()
+    tray_display.set_exit_callback(on_exit)
+    tray_display.run()
 
-def check_last_operate():
-    while True:
-        interval_time = time.time() - operation_watcher.last_operate_time
-        if interval_time > 3:
-            print(f'more than {interval_time} no operate')
-        time.sleep(1)
+def main_process(pipe: multiprocessing.Pipe):
 
+    def wait_exit_code():
+        while True:
+            pipe_msg = pipe.recv()
+            print(pipe_msg)
+            if pipe_msg == "exit":
+                operation_watcher.unwatch()
+                break
 
-threading.Thread(
-    target = operation_watcher.watch,
-    daemon = True
-).start()
+    operation_watcher = Operation_watcher()
+    threading.Thread(
+        target = operation_watcher.watch,
+        daemon = True
+    ).start()
+    threading.Thread(
+        target = Web_server().start,
+        args = (operation_watcher,),
+        daemon = True
+    ).start()
+    wait_exit_code()
 
-threading.Thread(
-    target = Web_server().start,
-    args = (operation_watcher,),
-    daemon = True
-).start()
-
-main_wait()
+if __name__ == '__main__':
+    multiprocessing.freeze_support()
+    p1 = multiprocessing.Process(
+        target = Tray_display_run,
+        args = (pipe1,)
+    )
+    p2 = multiprocessing.Process(
+        target = main_process,
+        args = (pipe2,)
+    )
+    p1.start()
+    p2.start()
+    p1.join()
+    p2.join()
